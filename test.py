@@ -13,12 +13,12 @@ import time
 # log.setLevel(logging.DEBUG)
 
 # try:
-#     # Kiểm tra cổng serial trước
+#     # Check Serial
 #     ser = serial.Serial(port, baudrate, timeout=1)
 #     ser.close()
-#     print(f"Cổng {port} có thể truy cập được")
+#     print(f"Port {port} maybe connect!")
     
-#     # Thử kết nối Modbus
+#     # Check Modbus
 #     client = ModbusSerialClient(
 #         method='rtu',
 #         port=port,
@@ -30,15 +30,15 @@ import time
 #     )
     
 #     if client.connect():
-#         print("Kết nối Modbus thành công!")
+#         print("Connected Succes!")
 #         client.close()
 #     else:
-#         print("Không thể kết nối Modbus!")
+#         print("No connect to Modbus!")
         
 # except serial.SerialException as e:
-#     print(f"Lỗi cổng serial: {e}")
+#     print(f"Bug serial: {e}")
 # except Exception as e:
-#     print(f"Lỗi không xác định: {e}")
+#     print(f"Bug: {e}")
 
 ############# Run
 client = ModbusSerialClient(
