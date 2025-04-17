@@ -1,4 +1,4 @@
-from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.client.sync import ModbusSerialClient            #Pymodbus==2.5.3
 
 port = 'COM4'  # Your COM port
 baudrate = 9600  # Your baud rate
