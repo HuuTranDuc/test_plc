@@ -54,6 +54,11 @@ result = "NG"
 client.connect()
 client.write_coil(address=0, value=True, unit=unit_id)
 time.sleep(2)
+
+# coil 0 - yellow light
+# coil 1 - green light
+# coil 2 - red light
+# coil 3 - horn
 if result == "OK":
     client.write_coil(address=0, value=False, unit=unit_id)
     client.write_coil(address=1, value=True, unit=unit_id)
