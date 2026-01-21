@@ -1,46 +1,14 @@
 from pymodbus.client.sync import ModbusSerialClient            #Pymodbus==2.5.3
 
-port = 'COM4'  # Your COM port
+# port = 'COM4'  # Windows
+port = '/dev/ttyUSB0'  # Ubuntu                      Sudo chmod 666 /dev/ttyUSB0
+
 baudrate = 9600  # Your baud rate
 unit_id = 3  # Your unit ID
 import logging
 import serial
 import time
 
-############################### Check port availability
-# logging.basicConfig()
-# log = logging.getLogger()
-# log.setLevel(logging.DEBUG)
-
-# try:
-#     # Check Serial
-#     ser = serial.Serial(port, baudrate, timeout=1)
-#     ser.close()
-#     print(f"Port {port} maybe connect!")
-    
-#     # Check Modbus
-#     client = ModbusSerialClient(
-#         method='rtu',
-#         port=port,
-#         baudrate=baudrate,
-#         parity='N',
-#         stopbits=1,
-#         bytesize=8,
-#         timeout=2
-#     )
-    
-#     if client.connect():
-#         print("Connected Succes!")
-#         client.close()
-#     else:
-#         print("No connect to Modbus!")
-        
-# except serial.SerialException as e:
-#     print(f"Bug serial: {e}")
-# except Exception as e:
-#     print(f"Bug: {e}")
-
-############# Run
 client = ModbusSerialClient(
         method='rtu',
         port=port,
@@ -52,19 +20,26 @@ client = ModbusSerialClient(
     )
 result = "NG"
 client.connect()
-client.write_coil(address=0, value=True, unit=unit_id)
-time.sleep(2)
 
-# coil 0 - yellow light
-# coil 1 - green light
-# coil 2 - red light
-# coil 3 - horn
-if result == "OK":
-    client.write_coil(address=0, value=False, unit=unit_id)
-    client.write_coil(address=1, value=True, unit=unit_id)
+# Check connection
+if not client.connect():
+    print("Not connect Modbus.")
+else:
+    print("Connect Modbus.")
 
-if result == "NG":
-    client.write_coil(address=0, value=False, unit=unit_id)
-    client.write_coil(address=2, value=True, unit=unit_id)
-    client.write_coil(address=3, value=True, unit=unit_id)
+# Check signal
+####################### address (0: processing, 1: OK, 2: NG, 3: Coil, 4: Top light, 8: signal camera, 9: Bottom light)
+for i in range(5):
+    client.write_coil(address=i, value=True, unit=unit_id)
+    time.sleep(2)
+
+for i in range(8, 10):
+    client.write_coil(address=i, value=True, unit=unit_id)
+    time.sleep(2)
+
+# Signal capture camera
+while True:
+    tmp = client.read_coils(address=10, unit=unit_id)
+    print(tmp.bits[0])
+    client.close()
 
